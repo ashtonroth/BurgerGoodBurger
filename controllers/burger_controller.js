@@ -1,49 +1,55 @@
-var express = require("express");
+  
+var burger = require("../models/burger");
 
+var all = burger.getAll;
+var insert = burger.insertNew;
+var update = burger.updatePrev;
+
+var express = require("express");
 var router = express.Router();
 
-var burgers = require("../models/burger");
+//get all those burgers
+router.get("/", function (req, res) {
+    burger.getAll(function (data) {
+        var object = {
+            burgers: data
+        }
+        console.log(object)
+        res.render("index", object);
+    })
+});
 
-
-
-// Routes
-// =============================================================
-module.exports = function(router) {
-
-  // GET route for getting all of the todos
-  router.get("/", function(req, res) {
-    // findAll returns all entries for a table when used with no options
-    burgers.findAll({}).then(function(Burgers) {
-      // We have access to the todos as an argument inside of the callback function
-      res.json(Burgers);
+//get that burger api
+router.get("/api/burgers", function (req, res) {
+    all(function (data) {
+        res.json(data);
     });
-
-  });
-
-router.post("/api/burgers", function(req, res) {
-   burgers.create([
-    "burger_name", "devoured"
-  ], [
-    req.body.burger_name, req.body.devoured
-  ], function(result) {
-    res.json({ id: result.insertId });
-  });
 });
 
-router.put("/api/burgers/:id", function(req, res) {
-  var condition = "id = " + req.params.id;
-
-  console.log("condition", condition);
-
-  burgers.update({
-    devoured: req.body.devoured
-  }, condition, function(result) {
-    if (result.changedRows == 0) {
-      return res.status(404).end();
-    } else {
-      res.status(200).end();
-    }
-  });
+//post (insert) a burger
+router.post("/api/burgers", function (req, res) {
+    burgerName = req.body.burger_name
+    console.log(burgerName)
+    insert(burgerName, function () {
+        res.redirect("/");
+    });
 });
-};
 
+//put (update) that burger
+router.put("/api/burgers/:id", function (req, res) {
+    var burgerId = req.params.id;
+    var condition = "burger_id = " + burgerId;
+    console.log("condition", condition);
+
+    update({
+        devoured: req.body.devoured
+    }, condition, function (result) {
+        if (result.changedRows === 0) {
+            return res.status(404).end();
+        } else {
+            res.status(200).end();
+        }
+    }); 
+});
+
+module.exports = router
