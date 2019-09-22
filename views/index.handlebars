@@ -1,0 +1,55 @@
+<h1 id="header">Hungry? Grab a Burger!</h1>
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      
+  <h2>Order Now!</h2>
+      <ul>
+        {{#each burgers}}
+          {{#unless devoured}}
+            {{> burgers/burger-block devoured=true}}
+          {{/unless}}
+        {{/each}}
+      </ul>
+      <br>
+    </div>
+
+    <div class="col">
+     <h2>Sold Out!</h2>
+        <ul>
+          {{#each burgers}}
+            {{#if devoured}}
+              {{> burgers/burger-block devoured=false}}
+            {{/if}}
+          {{/each}}
+        </ul>
+    </div>
+  </div>
+
+
+
+
+<br>
+<br>
+<div class="container2">
+<h2>Add a New Burger to the Menu</h2>
+<form class="create-form">
+
+  <div class="form-group sub">
+    <label for="addBurg">Burger Name:</label>
+    <input type="text" id="newBurg" name="name">
+  </div>
+
+    <div class="form-group sub">
+    <label for="state">Available Now</label><br>
+    <input type="radio" name="devour" value="0" checked> Available Now<br>
+    <input type="radio" name="devour" value="1"> Needs Restock
+  </div>
+
+
+    <button class="btn btn-dark sub" id="addNew" type="submit">Update Menu</button>
+</form>
+</div>
